@@ -14,8 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-import static com.example.demo.security.ApplicationUserRole.ADMIN;
-import static com.example.demo.security.ApplicationUserRole.ADMINTRAINEE;
+import static com.example.demo.security.ApplicationUserRole.*;
 
 @Configuration
 @EnableWebSecurity
@@ -58,19 +57,22 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         UserDetails annaSmithUser = User.builder()
                 .username("annaSmith")
                 .password(passwordEncoder.encode("password"))
-                .roles(ApplicationUserRole.STUDENT.name())//role student
+               // .roles(ApplicationUserRole.STUDENT.name())//role student
+                .authorities(STUDENT.getGrantedAuthority())
                 .build();
 
         UserDetails lindaUser = User.builder()
                 .username("linda")
                 .password(passwordEncoder.encode("password123"))
-                .roles(ADMIN.name())//role admin
+               // .roles(ADMIN.name())//role admin
+                .authorities(ADMIN.getGrantedAuthority())
                 .build();
 
         UserDetails tomUser = User.builder()
                 .username("tom")
                 .password(passwordEncoder.encode("password1234"))
-                .roles(ADMINTRAINEE.name())//role adminTrainee
+              //  .roles(ADMINTRAINEE.name())//role adminTrainee
+                .authorities(ADMINTRAINEE.getGrantedAuthority())
                 .build();
         return new InMemoryUserDetailsManager(
                 annaSmithUser
