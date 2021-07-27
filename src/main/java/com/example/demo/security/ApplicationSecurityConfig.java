@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -14,10 +15,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import static com.example.demo.security.ApplicationUserPermission.*;
 import static com.example.demo.security.ApplicationUserRole.*;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -33,18 +36,18 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name())
 
-                .antMatchers(HttpMethod.DELETE,"/managment/api/**")
-                 .hasAuthority(ApplicationUserPermission.Course_WRITE.name())
+       /*         .antMatchers(HttpMethod.DELETE,"/managment/api/**")
+                 .hasAuthority(Course_WRITE.getPermission())
 
                 .antMatchers(HttpMethod.PUT,"/managment/api/**")
-                .hasAuthority(ApplicationUserPermission.Course_WRITE.name())
+                .hasAuthority(Course_WRITE.getPermission())
 
                 .antMatchers(HttpMethod.POST,"/managment/api/**")
-                .hasAuthority(ApplicationUserPermission.Course_WRITE.name())
+                .hasAuthority(Course_WRITE.getPermission())
 
                 .antMatchers(HttpMethod.GET,"/managment/api/**")
                 .hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
-
+*/
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -72,8 +75,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .username("tom")
                 .password(passwordEncoder.encode("password1234"))
               //  .roles(ADMINTRAINEE.name())//role adminTrainee
-                .authorities(ADMINTRAINEE.getGrantedAuthority())
+                .authorities(ADMINTRAINEE.getGrantedAuthority()) //TODO it has problem as it can not post,put and delete??
                 .build();
+
         return new InMemoryUserDetailsManager(
                 annaSmithUser
                 , lindaUser,
