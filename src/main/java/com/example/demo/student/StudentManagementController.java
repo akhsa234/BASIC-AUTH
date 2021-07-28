@@ -20,7 +20,7 @@ public class StudentManagementController {
 //    hasRole('ROLE_') hasAnyRole('ROLE_') hasAuthority('permission') hasAnyAuthority('permission')
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ADMINTRAINEE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ADMINTRAINEE')") //version-2 permission
     public List<Student> getAll() {
         return STUDENTS;
     }

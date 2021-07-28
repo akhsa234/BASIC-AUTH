@@ -40,6 +40,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name())
 
+                //version-1 permission
        /*         .antMatchers(HttpMethod.DELETE,"/managment/api/**")
                  .hasAuthority(Course_WRITE.getPermission())
 
@@ -56,7 +57,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
                 //.httpBasic();// version -1 basic oath
-                .formLogin();
+                .formLogin()
+                .loginPage("/login");
     }
 
     @Override
