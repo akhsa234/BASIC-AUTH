@@ -58,24 +58,27 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 //.httpBasic();// version -1 basic oath
                 .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .defaultSuccessUrl("/courses", true)
+                    .loginPage("/login")
+                    .permitAll()
+                    .defaultSuccessUrl("/courses", true)
                 //TODO Unchecked runtime.lastError: The message port closed before a response was received.
+                    .passwordParameter("password")
+                    .usernameParameter("username")
                 .and()
                 .rememberMe() //version -1 --default for 2 weeks--
-                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(43))
-                .key("securedvalue") //md5 hash
+                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(43))
+                     .key("securedvalue") //md5 hash
+                     .rememberMeParameter("remember-me")
                 .and()
                 .logout()
-                .logoutUrl("/logout")
-                //csrf is disable so I can use this syntax, otherwise I should be comment & http method is post
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                   .logoutUrl("/logout")
+                     //csrf is disable so I can use this syntax, otherwise I should be comment & http method is post
+                   .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
                 // https://docs.spring.io/spring-security/site/docs/4.2.12.RELEASE/apidocs/org/springframework/security/config/annotation/web/configurers/LogoutConfigurer.html
-                .clearAuthentication(true)
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID","remember-me","XSRF-TOKEN","Idea-a50d3c09")
-                .logoutSuccessUrl("/login");
+                   .clearAuthentication(true)
+                   .invalidateHttpSession(true)
+                   .deleteCookies("JSESSIONID","remember-me","XSRF-TOKEN","Idea-a50d3c09")
+                   .logoutSuccessUrl("/login");
 
 
     }
