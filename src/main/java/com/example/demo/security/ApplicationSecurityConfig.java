@@ -30,7 +30,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()// 200 status --post ,delete,put were working
+               // .csrf().disable()//version-1 200 status --post ,delete,put were working // version-2 it does not generate in postman???
                 .authorizeRequests()
                 .antMatchers("/", "index", "/css/*", "/js/**")
                 .permitAll()
