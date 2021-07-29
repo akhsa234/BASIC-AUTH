@@ -38,7 +38,7 @@ public class FakeApplicationDaoService implements ApplicationUserDao {
                 ),
                 new ApplicationUser(
                         "linda",
-                        passwordEncoder.encode("password"),
+                        passwordEncoder.encode("password123"),
                         ADMIN.getGrantedAuthority(),
                         true,
                         true,
@@ -47,7 +47,7 @@ public class FakeApplicationDaoService implements ApplicationUserDao {
                 ),
                 new ApplicationUser(
                         "tom",
-                        passwordEncoder.encode("password"),
+                        passwordEncoder.encode("password1234"),
                         ADMINTRAINEE.getGrantedAuthority(),
                         true,
                         true,
