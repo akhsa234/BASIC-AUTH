@@ -1,6 +1,7 @@
 package com.example.demo.security;
 
 import com.example.demo.auth.ApplicationUserService;
+import com.example.demo.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -39,6 +41,12 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable() //version-1 200 status --post ,delete,put were working // version-2 it does not generate in postman???
                 //.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 // .and()
+
+
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager()))
                 .authorizeRequests()
                 .antMatchers("/", "index", "/css/*", "/js/**")
                 .permitAll()
@@ -58,7 +66,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                          .hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
          */
                 .anyRequest()
-                .authenticated()
+                .authenticated();
+
+                /* when add filter do not need these lines
                 .and()
                 //.httpBasic();// version -1 basic oath
                 .formLogin()
@@ -83,7 +93,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                    .invalidateHttpSession(true)
                    .deleteCookies("JSESSIONID","remember-me","XSRF-TOKEN","Idea-a50d3c09")
                    .logoutSuccessUrl("/login");
-
+*/
 
     }
 

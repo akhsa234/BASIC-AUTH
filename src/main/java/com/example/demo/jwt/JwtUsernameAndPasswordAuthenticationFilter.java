@@ -81,10 +81,11 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         String key = "harryPotterharryPotterharryPotterharryPotterharryPotterharryPotter";
 
         String token = Jwts.builder()
-                .setSubject(authResult.getName())// sub (subject) linda or ...-- header
-                .claim("authorities", authResult.getAuthorities()) //payloud
-                .setIssuedAt(new Date()) //iss (issuer)
-                .setExpiration(java.sql.Date.valueOf(LocalDate.now().minusWeeks(2)))//  exp (expiration time)
+                // there is not any header {  "alg": "HS256"   }
+                .setSubject(authResult.getName())// sub (subject)  "sub": "linda",
+                .claim("authorities", authResult.getAuthorities()) //payloud "authorities": [ { "authority": "student:write"  },
+                .setIssuedAt(new Date()) //iss (issuer) "iat": 1627634215,
+                .setExpiration(java.sql.Date.valueOf(LocalDate.now().minusWeeks(2)))//  exp (expiration time)  "exp": 1626377400
                 .signWith(Keys.hmacShaKeyFor(key.getBytes()))// Signature HMAC SHA256
                 .compact();
 
