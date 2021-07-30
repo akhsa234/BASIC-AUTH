@@ -1,18 +1,21 @@
 package com.example.demo.jwt;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.imageio.IIOException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -25,13 +28,14 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response)
-                                                throws AuthenticationException {
+            throws AuthenticationException {
+
         try {
             UsernameAndPasswordAuthenticationRequest authenticationRequest =
                     new ObjectMapper().readValue(request.getInputStream(),
                             UsernameAndPasswordAuthenticationRequest.class);
 
-            Authentication authentication= new UsernamePasswordAuthenticationToken(
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
                     //principle
                     authenticationRequest.getUsername(),
                     //credential
@@ -39,15 +43,53 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             );
             Authentication authenticate = authenticationManager.authenticate(authentication);
             return authenticate;
-        }
-        catch (IIOException e){
-            throw new RuntimeException(e);
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        
+
+    }
+
+    /**
+     * Default behaviour for successful authentication.
+     * <ol>
+     * <li>Sets the successful <tt>Authentication</tt> object on the
+     * {@link SecurityContextHolder}</li>
+     * <li>Informs the configured <tt>RememberMeServices</tt> of the successful login</li>
+     * <li>Fires an {@link InteractiveAuthenticationSuccessEvent} via the configured
+     * <tt>ApplicationEventPublisher</tt></li>
+     * <li>Delegates additional behaviour to the
+     * {@link AuthenticationSuccessHandler}.</li>
+     * </ol>
+     * <p>
+     * Subclasses can override this method to continue the {@link FilterChain} after
+     * successful authentication.
+     *
+     * @param request
+     * @param response
+     * @param chain
+     * @param authResult the object returned from the <tt>attemptAuthentication</tt>
+     *                   method.
+     * @throws IOException
+     * @throws ServletException
+     */
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
+
+        String key = "harryPotterharryPotterharryPotterharryPotterharryPotterharryPotter";
+
+        String token = Jwts.builder()
+                .setSubject(authResult.getName())// sub (subject) linda or ...-- header
+                .claim("authorities", authResult.getAuthorities()) //payloud
+                .setIssuedAt(new Date()) //iss (issuer)
+                .setExpiration(java.sql.Date.valueOf(LocalDate.now().minusWeeks(2)))//  exp (expiration time)
+                .signWith(Keys.hmacShaKeyFor(key.getBytes()))// Signature HMAC SHA256
+                .compact();
+
+//Authorization: Bearer <token>
+        response.addHeader("Authorization", "Bearer" + token);
+
+    }
 }
