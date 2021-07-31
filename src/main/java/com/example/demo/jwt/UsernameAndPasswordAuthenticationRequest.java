@@ -24,11 +24,5 @@ public class UsernameAndPasswordAuthenticationRequest {
         this.password = password;
     }
 
-    @Override
-    public String toString() {
-        return "UsernameAndPasswordAuthenticationRequest{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
+
 }
